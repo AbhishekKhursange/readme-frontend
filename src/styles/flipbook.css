@@ -1,0 +1,283 @@
+/* Shell wraps the book + its decorative overlays. Its left margin is set
+   dynamically in PageFlipViewer.jsx: 0 while the solo cover is showing
+   (centered, like a closed book), shifted ~1cm right once a real two-page
+   spread is open (so it clears the background moon). */
+.flip-book-shell {
+  position: relative;
+  display: inline-block;
+}
+
+.story-flipbook {
+  /* box-shadow: var(--shadow-card); */
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.flip-page {
+  background-color: #fdfaf3;
+  /* fallback while the texture loads, or if it fails */
+  background-image: url("/page-texture.webp");
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: #2a2a2a;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ---------- Page-stack edges: both sides now driven from JS
+   (.page-stack-line elements in PageFlipViewer.jsx) — left grows as pages
+   are turned, right shrinks as pages "remaining" run out. Each line's
+   `left`/`right` and `opacity` are set inline per line so they sit
+   progressively further back. */
+.page-stack-line {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  width: 20px;
+  border-radius: 9px;
+  /* = half the width, so top/bottom become full round caps */
+  opacity: 1;
+  /* fully solid — no fading, so each sheet reads as crisp, not blurred */
+  background-color: #fdfaf3; /* fallback while the texture loads, or if it fails */
+  background-image: url("/page-texture.webp");
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* A real border (not just a shadow trick) is what actually reads as a
+     distinct page edge, matching Gemini's own technique — plus a soft
+     elevation shadow so each sheet reads as sitting slightly apart. */
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 3px 3px -2px rgba(0, 0, 0, 0.2),
+    0 3px 4px 0 rgba(0, 0, 0, 0.14),
+    0 1px 8px 0 rgba(0, 0, 0, 0.12);
+}
+
+.page-stack-line-left {
+  border-radius: 20px 0 0 20px;
+}
+
+.page-stack-line-right {
+  border-radius: 0 20px 20px 0;
+}
+
+/* ---------- Spine shadow: two mirrored one-directional gradients, each
+   anchored to one page's inner edge and deepening toward the spine —
+   matches Gemini's actual technique more closely than a single symmetric
+   gradient did. Sits on top of the pages but doesn't block clicks/drags. */
+.flip-spine-shadow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3em;
+  z-index: 2;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.flip-spine-shadow-left {
+  right: 50%;
+  background-image: linear-gradient(to right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.1) 30%,
+      rgba(0, 0, 0, 0.4) 69%,
+      rgba(0, 0, 0, 0.7) 100%);
+}
+
+.flip-spine-shadow-right {
+  left: 50%;
+  background-image: linear-gradient(to left,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.1) 30%,
+      rgba(0, 0, 0, 0.4) 69%,
+      rgba(0, 0, 0, 0.7) 100%);
+}
+
+/* ---------- Image-only page (full bleed, no text at all) ---------- */
+.flip-page-image-full {
+  flex: 1 1 auto;
+  height: 100%;
+  overflow: hidden;
+}
+
+.flip-page-image-full img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---------- Text-only page ---------- */
+.flip-page-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px; /* a real, fixed height — tall enough to fully cover any
+                    scrolled text line that reaches the top, not just the
+                    height of the label's own glyphs */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 24px;
+  /* A solid, opaque fill (matching the page) is the actual fix — without
+     this, only the letters themselves were opaque, so scrolled text showed
+     through the empty space around them instead of being fully hidden. */
+  background-color: #fdfaf3;
+  background-image: url("/page-texture.webp");
+  background-size: cover;
+  background-repeat: no-repeat;
+  letter-spacing: 0.08em;
+  font: 12px "Crimson Text", serif;
+  color: #575B5F;
+  z-index: 3; /* above the scrolling text and the spine shadow */
+}
+
+.flip-page-text-full {
+  flex: 1 1 auto;
+  min-height: 0;
+  /* THE actual fix: flex items default to min-height: auto,
+                     which refuses to shrink below content size — silently
+                     defeating overflow-y: auto entirely (it never overflows,
+                     it just grows and gets clipped by .flip-page's own
+                     overflow: hidden). This forces it to respect the space
+                     the flex layout actually gives it, so it genuinely
+                     scrolls instead of expanding. */
+  height: 100%;
+  padding: 56px 22px 24px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  display: grid;
+  justify-items: center;
+  align-items: start;
+
+    /* Bottom fade: the last ~60px of scrollable text fades to transparent.
+     Since this element has no background of its own, the fade reveals the
+     actual page texture on .flip-page behind it — not a mismatched flat
+     color — matching how Gemini's own masked text container works. */
+  -webkit-mask-image: linear-gradient(to top, transparent, black 60px);
+  mask-image: linear-gradient(to top, transparent, black 60px);
+
+  /* Scrollbar hidden by default (Firefox + Chrome/Safari/Edge) */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.flip-page-text-full::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Revealed only while actively scrolling — see the isScrolling state in
+   PageFlipViewer.jsx, which adds/removes this class. */
+.flip-page-text-full.is-scrolling {
+  scrollbar-width: thin;
+}
+
+.flip-page-text-full.is-scrolling::-webkit-scrollbar {
+  width: 6px;
+}
+
+.flip-page-text-full.is-scrolling::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
+}
+
+.flip-page-text-full::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------- Scroll-down arrow button ---------- */
+.flip-scroll-arrow {
+  position: absolute;
+  left: 50%;
+  bottom: 46px;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background-color: #dde3ea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.flip-scroll-arrow:hover {
+  background-color: rgb(205, 212, 220);
+}
+
+.flip-scroll-arrow svg {
+  display: block;
+}
+
+.story-text.drop-cap {
+  font-family: "Crimson Text", serif;
+  font-size: 22px;
+  line-height: 30px;
+  font-weight: 400;
+  color: rgb(0, 0, 0);
+  visibility: visible;
+  display: block;
+  width: 70%;
+  /* restricted width is what makes the centering visible */
+  max-width: 220px;
+  text-align: start;
+  /* text itself stays left-aligned inside that column */
+  margin: 22px 0;
+}
+
+.story-text.drop-cap::first-letter {
+  font-size: 60px;
+  line-height: 60px;
+  font-weight: 400;
+  float: inline-start;
+  margin-right: 12px;
+}
+
+.flip-page-number {
+  position: absolute;
+  bottom: 15px;
+  right: 16px;
+  font: 16px "Crimson Text", serif;
+  color: #575B5F;
+  padding: 0px 24px 0px 0px;
+}
+
+/* ---------- Cover page (shown alone, not paired with a facing page) ---------- */
+.flip-cover {
+  padding: 0;
+}
+
+.flip-cover-image {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.flip-cover-plate {
+  flex: 0 0 auto;
+  padding: 16px 20px;
+  text-align: center;
+  background: #fdfaf3;
+}
+
+.flip-cover-title {
+  font-family: Georgia, "Times New Roman", serif;
+  margin: 0 0 4px;
+}
+
+.flip-cover-author {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b6b6b;
+}
