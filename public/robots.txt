@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://YOUR-DOMAIN-HERE/sitemap.xml
+Sitemap: https://readme-backend-f0wv.onrender.com/sitemap.xml
