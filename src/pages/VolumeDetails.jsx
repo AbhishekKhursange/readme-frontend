@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { volumeService } from "../api/bookService";
 import Loader from "../components/Loader";
+import { Helmet } from "react-helmet-async";
 
 export default function VolumeDetails() {
   const { volumeSlug } = useParams();
@@ -24,6 +25,12 @@ export default function VolumeDetails() {
 
   return (
     <div className="container py-4 page-fade-in text-center">
+      <Helmet>
+        <title>{volume.title} — {volume.bookTitle} | ReadMe</title>
+        <meta name="description" content={`Chapters in ${volume.title} from ${volume.bookTitle}.`} />
+        <meta property="og:title" content={volume.title} />
+        <meta property="og:image" content={volume.coverImageUrl} />
+      </Helmet>
       <h2 className="mb-1">{volume.title}</h2>
       <p style={{ color: "var(--color-text-muted)" }}>
         {volume.bookTitle} · Volume {volume.volumeNumber}

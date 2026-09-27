@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { bookService } from "../api/bookService";
 import Loader from "../components/Loader";
+import { Helmet } from "react-helmet-async";
 
 export default function BookDetails() {
   const { bookSlug } = useParams();
@@ -24,6 +25,14 @@ export default function BookDetails() {
 
   return (
     <div className="container py-4 page-fade-in">
+      <Helmet>
+        <title>{book.title} | ReadMe</title>
+        <meta name="description" content={book.description?.slice(0, 155)} />
+        <meta property="og:title" content={book.title} />
+        <meta property="og:description" content={book.description?.slice(0, 200)} />
+        <meta property="og:image" content={book.coverImageUrl} />
+        <meta property="og:type" content="book" />
+      </Helmet>
       <div className="glass-panel p-4">
         <div className="row g-4">
           <div className="col-md-4">

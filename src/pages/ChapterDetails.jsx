@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { chapterService } from "../api/bookService";
 import Loader from "../components/Loader";
+import { Helmet } from "react-helmet-async";
 
 export default function ChapterDetails() {
   const { chapterSlug } = useParams();
@@ -24,6 +25,14 @@ export default function ChapterDetails() {
 
   return (
     <div className="container py-4 page-fade-in">
+      <Helmet>
+        <title>{chapter.title} — {chapter.bookTitle} | ReadMe</title>
+        <meta name="description" content={chapter.description?.slice(0, 155)} />
+        <meta property="og:title" content={chapter.title} />
+        <meta property="og:description" content={chapter.description?.slice(0, 200)} />
+        <meta property="og:image" content={chapter.coverImageUrl} />
+        <meta property="og:type" content="book" />
+      </Helmet>
       <div className="glass-panel p-4">
         <div className="row g-4">
           <div className="col-md-4">

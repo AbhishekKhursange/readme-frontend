@@ -5,6 +5,7 @@ import BookCard from "../components/BookCard";
 import VolumeCard from "../components/VolumeCard";
 import CategoryPills from "../components/CategoryPills";
 import Loader from "../components/Loader";
+import { Helmet } from "react-helmet-async";
 
 export default function Home() {
   const [searchParams] = useSearchParams();
@@ -53,6 +54,19 @@ export default function Home() {
 
   return (
     <div className="container py-4 page-fade-in text-center">
+      <Helmet>
+        <title>ReadMe | Illustrated Storybooks to Read Online</title>
+        <meta
+          name="description"
+          content="Browse bedtime stories, suspense tales, romance, and informative illustrated storybooks. Read free, beautifully illustrated books online at ReadMe."
+        />
+        <meta property="og:title" content="ReadMe | Illustrated Storybooks to Read Online" />
+        <meta
+          property="og:description"
+          content="Browse and read illustrated storybooks across bedtime, suspense, romance, and more."
+        />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <h2 className="mb-1">{searchQuery ? `Results for "${searchQuery}"` : "Browse Books"}</h2>
       <p style={{ color: "var(--color-text-muted)" }}>
         Bedtime stories, suspense tales, and informative reads — pick a shelf.
