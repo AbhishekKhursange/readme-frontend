@@ -18,6 +18,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import RequireAdmin from "./components/RequireAdmin";
 import TermsOfUse from "./pages/TermsOfUse";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CookiePolicy from "./pages/CookiePolicy";
 import TermsGate from "./components/TermsGate";
 import NotFound from "./pages/NotFound";
 
@@ -49,6 +50,7 @@ export default function App() {
             />
             <Route path="/terms" element={<TermsOfUse />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
