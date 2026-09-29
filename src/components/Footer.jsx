@@ -11,6 +11,9 @@ export default function Footer() {
         <Link to="/privacy" style={{ color: "var(--color-text-muted)" }}>
           Privacy Policy
         </Link>
+        <a href="#" className="termly-display-preferences" style={{ color: "var(--color-text-muted)" }}>
+          Cookie Preferences
+        </a>
       </div>
     </footer>
   );

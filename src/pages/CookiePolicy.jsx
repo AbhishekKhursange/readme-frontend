@@ -61,6 +61,12 @@ export default function CookiePolicy() {
           access to some functionality and areas of our Website may be restricted. You may also
           set or amend your web browser controls to accept or refuse cookies.
         </p>
+        <p>
+          The specific types of first- and third-party cookies served through our Website and
+          the purposes they perform are described in the notification banner and Cookie
+          Preference Center referenced above (the specific cookies served may vary depending on
+          which pages of the Website you visit, and will expand once advertising is enabled).
+        </p>
 
         <h4 className="mt-4">How can I control cookies on my browser?</h4>
         <p>
