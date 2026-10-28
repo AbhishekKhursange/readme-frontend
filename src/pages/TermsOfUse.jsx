@@ -42,8 +42,8 @@ export default function TermsOfUse() {
         <p>
           You must provide accurate information when creating an account and are responsible for
           maintaining the confidentiality of your password and all activity under your account.
-          You must notify us promptly of any unauthorized use of your account. This Site is not
-          intended for use by children under 13.
+          You must notify us promptly of any unauthorized use of your account. You must notify us promptly of any unauthorized use of your account. You must be at
+          least 18 years old to use this Site.
         </p>
 
         <h4 className="mt-4">5. Advertising</h4>
